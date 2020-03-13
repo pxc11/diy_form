@@ -1,0 +1,64 @@
+{template 'common/header'}
+<link rel="stylesheet" href="../addons/pc_form/template/styles/layui/css/layui.css">
+<span class="layui-breadcrumb">
+  <a href="{php echo $this->createWebUrl('list')}">万能表单</a>
+    <a href=""><cite>添加表单类型</cite></a>
+</span>
+
+<style>
+  .layui-form-label{
+    width: 100px;
+  }
+  .layui-form{
+    margin-top: 20px;
+  }
+</style>
+<div class="layui-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+  <div class="layui-form-item">
+    <label class="layui-form-label">表单名称</label>
+    <div class="layui-input-block">
+      <input type="text" name="title" placeholder="请输入" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">是否显示</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="is_show" value="1" checked lay-skin="switch">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="../addons/pc_form/template/styles/layui/layui.all.js"></script>
+<script>
+    ;!function(){
+      var form = layui.form;
+      var $ = layui.jquery;
+      var layer = layui.layer;
+      form.on('submit(*)', function(data){
+        console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+        $.post("{php echo $this->createWebUrl('TypeAdd',['op'=>'post'])}", data.field, function (data1) {
+
+          let res=eval("(" + data1 + ")");
+          console.log(res);
+          if(res.code==1){
+            layer.msg(res.msg);
+            location.href="{php echo $this->createWebUrl('list')}";
+          }else {
+            layer.msg(res.msg);
+          }
+
+        });
+
+      });
+    }();
+</script>
+{template 'common/footer'}

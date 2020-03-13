@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="`">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<body>
+<div class="layui-col-md12" style="padding: 10px">
+    <div class="layui-card">
+        <div class="layui-card-header">标题</div>
+        <div class="layui-card-body">
+            <div class="layui-form" lay-filter="*" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单行输入框</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单行选择框</label>
+                    <div class="layui-input-block">
+                        <select name="interest" lay-filter="aihao">
+                            <option value=""></option>
+                            <option value="0">写作</option>
+                            <option value="1" selected="">阅读</option>
+                            <option value="2">游戏</option>
+                            <option value="3">音乐</option>
+                            <option value="4">旅行</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item" pane="">
+                    <label class="layui-form-label">原始复选框</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="like" value="写作" lay-skin="primary" title="写作">
+                        <input type="checkbox" name="like" value="阅读"  lay-skin="primary" title="阅读">
+                        <input type="checkbox" name="like" value="游戏"  lay-skin="primary" title="游戏">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单选框</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="sex" value="男" title="男" checked="">
+                        <input type="radio" name="sex" value="女" title="女">
+
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button lay-filter="*" type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="vue.js"></script>
+<script src="layui/layui.all.js"></script>
+
+<script>
+
+    var app3 = new Vue({
+        el: '#app-3',
+        data: {
+            seen: true
+        }
+    })
+
+    layui.form.on('submit(*)', function(data){
+        console.log(data.field) ;//当前容器的全部表单字段，名值对形式：{name: value}
+        let data1=data.field;
+        let $ =layui.jquery;
+        let arr=new Array();
+        $("input[type='checkbox']:checked").each(function (i) {
+
+            if(arr[$(this).attr("name")]){
+                arr[$(this).attr("name")]+=","+$(this).attr("value");
+            }else {
+                arr[$(this).attr("name")]=$(this).attr("value");
+            }
+
+
+        });
+        console.log(arr['like']);
+        for (var k in arr){
+            console.log(k);
+            data1[k]=arr[k];
+        }
+
+        console.log(data1);
+        return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+    });
+
+
+
+
+</script>
+
+</body>
+</html>
+

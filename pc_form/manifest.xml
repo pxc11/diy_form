@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://www.we7.cc" versionCode="0.6">
+	<application setting="false">
+		<name><![CDATA[万能表单]]></name>
+		<identifie><![CDATA[pc_form]]></identifie>
+		<version><![CDATA[1.0.0]]></version>
+		<type><![CDATA[ctivity]]></type>
+		<ability><![CDATA[万能表单]]></ability>
+		<description><![CDATA[万能表单]]></description>
+		<author><![CDATA[pc]]></author>
+		<url><![CDATA[]]></url>
+	</application>
+	<platform>
+		<subscribes>
+		</subscribes>
+		<handles>
+			<message type="text" />
+		</handles>
+		<rule embed="false" />
+		<supports>
+			<item type="app" ></item>
+		</supports>
+	</platform>
+	<bindings>
+     <cover>
+		 <entry title="功能封面" do="cover" ></entry>
+	 </cover>
+		<menu>
+			<entry title="表单列表" do="list" />
+
+		</menu>
+
+	</bindings>
+	<install><![CDATA[
+
+
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `ims_pc_form_data`;
+CREATE TABLE `ims_pc_form_data`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type_id` int(11) NOT NULL,
+  `data` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `create_time` datetime NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+
+DROP TABLE IF EXISTS `ims_pc_form_project`;
+CREATE TABLE `ims_pc_form_project`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type_id` int(11) NOT NULL,
+  `project_type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `sort` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
+  `title` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `is_show` tinyint(255) NOT NULL DEFAULT 1,
+  `create_time` datetime NOT NULL,
+  `is_required` tinyint(255) NOT NULL DEFAULT 0,
+  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 12 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+DROP TABLE IF EXISTS `ims_pc_form_type`;
+CREATE TABLE `ims_pc_form_type`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `create_time` datetime NOT NULL,
+  `is_show` tinyint(255) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+
+
+]]></install>
+	<uninstall><![CDATA[]]></uninstall>
+	<upgrade><![CDATA[]]></upgrade>
+</manifest>

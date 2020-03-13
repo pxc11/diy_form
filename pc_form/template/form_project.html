@@ -1,0 +1,134 @@
+{template 'common/header'}
+<link rel="stylesheet" href="../addons/pc_form/template/styles/layui/css/layui.css">
+<span class="layui-breadcrumb">
+  <a href="{php echo $this->createWebUrl('list')}">万能表单</a>
+    <a href=""><cite>{$form_name} 表单项目</cite></a>
+</span>
+
+<style>
+
+</style>
+<div class="layui-form">
+
+    <table class="layui-table">
+
+        <thead>
+        <tr>
+            <th colspan="7">
+                <div class="layui-btn-container">
+                    <a href="{php echo $this->createWebUrl('ProjectAdd',['id'=>$_GPC['id']])}"><button type="button"  class="layui-btn layui-btn-sm">添加项目</button></a>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <th>标题</th>
+            <th>类型</th>
+            <th>是否显示</th>
+            <th>是否必填</th>
+            <th>创建时间</th>
+            <th>排序</th>
+            <th>操作</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {loop $list $item}
+        <tr>
+            <td>{$item['title']}</td>
+            <td>{$item['project_type']}</td>
+            <td><input type="checkbox" lay-filter="is_show" data-id="{$item['id']}" {if $item['is_show']==1}checked
+                {/if} name="is_show" lay-skin="switch" lay-text="是|否" value="1">
+
+            </td>
+            <td><input type="checkbox" lay-filter="is_required" data-id="{$item['id']}" {if $item['is_required']==1}checked
+                {/if} name="is_show" lay-skin="switch" lay-text="是|否" value="1">
+            </td>
+            <td>{$item['create_time']}</td>
+            <td>{$item['sort']}</td>
+            <td>
+                <div class="layui-btn-container">
+                    <a href="{php echo $this->createWebUrl('ProjectEdit',['id'=>$item['id']])}"><button type="button" class="layui-btn layui-btn-xs">编辑</button></a>
+                    <button  onclick="del()" data-id="{$item['id']}" type="button"  class="layui-btn layui-btn-xs layui-btn-danger del123">删除</button>
+                </div>
+            </td>
+
+        </tr>
+        {/loop}
+
+        </tbody>
+    </table>
+</div>
+
+
+<script src="../addons/pc_form/template/styles/layui/layui.all.js"></script>
+<script>
+    ;!function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        var layer = layui.layer;
+
+
+
+        form.on("switch(is_show)", function (data) {
+            let id = $(this).attr("data-id");
+            let value = data.elem.checked ? 1 : 0;
+            console.log(id);
+            console.log(value);
+            $.post("{php echo $this->createWebUrl('ProjectShow')}", {id: id, is_show: value}, function (data1) {
+                let res = eval("(" + data1 + ")");
+
+                if (res.code == 1) {
+                    layer.msg(res.msg);
+                } else {
+                    layer.msg(res.msg);
+                    location.reload();
+                }
+
+            });
+        })
+
+        form.on("switch(is_required)", function (data) {
+            let id = $(this).attr("data-id");
+            let value = data.elem.checked ? 1 : 0;
+            console.log(id);
+            console.log(value);
+            $.post("{php echo $this->createWebUrl('ProjectRequired')}", {id: id, is_required: value}, function (data1) {
+                let res = eval("(" + data1 + ")");
+
+                if (res.code == 1) {
+                    layer.msg(res.msg);
+                } else {
+                    layer.msg(res.msg);
+                    //location.reload();
+                }
+
+            });
+        })
+
+        $(".del123").on("click",function () {
+            let id = $(this).attr("data-id");
+            console.log(id);
+            var layer = layui.layer;
+            layer.confirm("是否确认删除",function () {
+                $.post("{php echo $this->createWebUrl('ProjectDel')}",{id:id},function (data) {
+                    let res = eval("(" + data + ")");
+                    if (res.code == 1) {
+                        layer.msg(res.msg);
+                        location.reload();
+                    } else {
+                        layer.msg(res.msg);
+
+                    }
+
+                });
+            })
+        })
+
+
+
+    }();
+
+
+
+</script>
+{template 'common/footer'}

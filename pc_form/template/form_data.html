@@ -1,0 +1,75 @@
+{template 'common/header'}
+<link rel="stylesheet" href="../addons/pc_form/template/styles/layui/css/layui.css">
+<span class="layui-breadcrumb">
+  <a href="{php echo $this->createWebUrl('list')}">万能表单</a>
+    <a href=""><cite>{$form_name} 表单数据</cite></a>
+</span>
+<div id="rq" style="margin-top: 10px" class="layui-collapse">
+
+
+</div>
+
+<script id="demo" type="text/html">
+    <div class="layui-colla-item ">
+        <h2 class="layui-colla-title">调查时间：{{d.create_time}}</h2>
+        <div class="layui-colla-content ">
+            <table class="layui-table">
+
+                <tbody>
+                {{# for(var v in d.data){ }}
+                <tr>
+                    <td>{{v}}</td>
+                    <td>{{d.data[v]}}</td>
+                </tr>
+                {{# } }}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</script>
+
+<script src="../addons/pc_form/template/styles/layui/layui.all.js"></script>
+<script>
+    ;!function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var flow = layui.flow;
+        var laytpl=layui.laytpl;
+
+        layui.use('element', function(){
+            var element = layui.element;
+
+            flow.load({
+                elem: '#rq' //指定列表容器
+                , done: function (page, next) { //到达临界点（默认滚动触发），触发下一页
+
+                    var lis = [];
+                    //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
+                    $.post("{php echo $this->createWebUrl('FormData',['op'=>'post','type_id'=>$type_id])}"+"&page="+page, function (res) {
+                        //假设你的列表返回在data集合中
+
+                        let res1 = eval('('+res+')');
+                        console.log(res1);
+                        for (var i in res1.data){
+                            let t=demo.innerHTML;
+                            laytpl(t).render(res1.data[i], function(html){
+                                lis.push(html);
+                            });
+                        }
+                        next(lis.join(''), page < res.pages);
+                        element.init();
+                    });
+
+                }
+            });
+        });
+
+
+
+    }();
+
+
+</script>
+{template 'common/footer'}

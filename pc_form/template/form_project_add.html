@@ -1,0 +1,118 @@
+{template 'common/header'}
+<link rel="stylesheet" href="../addons/pc_form/template/styles/layui/css/layui.css">
+<span class="layui-breadcrumb">
+  <a href="{php echo $this->createWebUrl('list')}">万能表单</a>
+  <a href="{php echo $this->createWebUrl('project',['id'=>$id])}">{$form_name} 表单项目</a>
+    <a href=""><cite>添加项目</cite></a>
+</span>
+
+<style>
+  .layui-form-label{
+    width: 100px;
+  }
+  .layui-form{
+    margin-top: 20px;
+  }
+</style>
+<div class="layui-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+  <div class="layui-form-item">
+    <label class="layui-form-label">标题</label>
+    <div class="layui-input-block">
+      <input type="text" value="{$item['title']}" name="title" placeholder="请输入" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">类型</label>
+    <div class="layui-input-block">
+      <select class="p_type" lay-filter="type" name="project_type" lay-verify="">
+        <option {if $item['project_type']=="输入框"}selected{/if} value="输入框">输入框</option>
+        <option {if $item['project_type']=="单选框"}selected{/if} value="单选框" >单选框</option>
+        <option {if $item['project_type']=="多选框"}selected{/if} value="多选框">多选框</option>
+        <option {if $item['project_type']=="下拉选择框"}selected{/if} value="下拉选择框">下拉选择框</option>
+        <option {if $item['project_type']=="时间框"}selected{/if} value="时间框">时间框</option>
+      </select>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">排序</label>
+    <div class="layui-input-block">
+      <input value="{$item['sort']}" type=number" name="sort" placeholder="默认为0,越大越靠前" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <div class="layui-form-item p_content" style="display: none">
+    <label class="layui-form-label">选项<br>(每行为一个选项)</label>
+    <div class="layui-input-block">
+      <textarea value="{$item['content']}" name="content" id="" cols="30" rows="10"></textarea>
+    </div>
+  </div>
+
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">是否显示</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="is_show" {if $item['is_show']==1}checked{/if} value="1" checked lay-skin="switch">
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">是否必须</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="is_required" value="1" {if $item['is_required']==1}checked{/if} checked lay-skin="switch">
+    </div>
+  </div>
+
+<input type="hidden" name="id" value="{$id}">
+
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="../addons/pc_form/template/styles/layui/layui.all.js"></script>
+<script>
+    ;!function(){
+      var form = layui.form;
+      var $ = layui.jquery;
+      var layer = layui.layer;
+
+
+      form.on('select(type)', function(data){
+        console.log(data.value); //得到被选中的值
+        if(data.value=="输入框"||data.value=="时间框"){
+          $(".p_content").hide();
+        }else {
+          $(".p_content").show();
+        }
+
+      });
+
+
+
+
+      form.on('submit(*)', function(data){
+        console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+        $.post("{php echo $this->createWebUrl('ProjectAdd',['op'=>'post'])}", data.field, function (data1) {
+
+          let res=eval("(" + data1 + ")");
+          console.log(res);
+          if(res.code==1){
+            layer.msg(res.msg);
+            location.href="{php echo $this->createWebUrl('project',['id'=>$id])}";
+          }else {
+            layer.msg(res.msg);
+          }
+
+        });
+
+      });
+
+
+    }();
+
+
+</script>
+{template 'common/footer'}

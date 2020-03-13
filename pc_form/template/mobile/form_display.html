@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../addons/pc_form/template/styles/layui/css/layui.css">
+    <title>表单演示</title>
+</head>
+<body>
+<script>
+    var timer=[];
+</script>
+<div class="layui-col-md12" style="padding: 10px">
+<div  class="layui-card">
+    <div class="layui-card-header">{$form_title}</div>
+    <div class="layui-card-body">
+        <div class="layui-form">
+            {loop $list $item}
+            {if $item['project_type']=="输入框"}
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$item["title"]}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="{$item["title"]}"   {if $item["is_required"]==1}lay-verify="required"{/if} placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            {/if}
+            {if $item['project_type']=="单选框"}
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$item["title"]}</label>
+                <div class="layui-input-block">
+                    {php $arr=explode("\n",$item["content"])}
+                    {loop $arr $va}
+                    <input type="radio" {if $item["is_required"]==1}lay-verify="required"{/if} name="{$item["title"]}" value="{$va}" title="{$va}">
+                    {/loop}
+
+                </div>
+
+            </div>
+            {/if}
+            {if $item['project_type']=="多选框"}
+            <div class="layui-form-item" pane="">
+                <label class="layui-form-label">{$item["title"]}</label>
+                <div class="layui-input-block">
+                    {php $arr=explode("\n",$item["content"])}
+                    {loop $arr $va}
+                    <input type="checkbox" name='{$item["title"]}' {if $item["is_required"]==1}lay-verify="required"{/if} value="{$va}" lay-skin="primary" title="{$va}">
+
+                    {/loop}
+
+                </div>
+            </div>
+
+            {/if}
+            {if $item['project_type']=="下拉选择框"}
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$item["title"]}</label>
+                <div class="layui-input-block">
+                    <select name="{$item["title"]}" >
+                        {php $arr=explode("\n",$item["content"])}
+                        {loop $arr $va}
+                        <option value="{$va}">{$va}</option>
+
+                        {/loop}
+
+                    </select>
+                </div>
+            </div>
+            {/if}
+
+            {if $item['project_type']=="时间框"}
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$item["title"]}</label>
+                <div class="layui-input-block">
+                    <input id="timer{$item["id"]}" type="text" name="{$item["title"]}"   {if $item["is_required"]==1}lay-verify="required"{/if} placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <script>
+                timer.push("timer{$item["id"]}");
+
+            </script>
+            {/if}
+
+            {/loop}
+            <input type="hidden" name="type_id" value="{$id}">
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button lay-filter="*" type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script src="../addons/pc_form/template/styles/layui/layui.all.js"></script>
+<script>
+    layui.form.on('submit(*)', function(data){
+        console.log(data.field) ;//当前容器的全部表单字段，名值对形式：{name: value}
+        let data1=data.field;
+        let $ =layui.jquery;
+        let arr=new Array();
+        $("input[type='checkbox']:checked").each(function (i) {
+
+            if(arr[$(this).attr("name")]){
+                arr[$(this).attr("name")]+=","+$(this).attr("value");
+            }else {
+                arr[$(this).attr("name")]=$(this).attr("value");
+            }
+
+        });
+        for (var k in arr){
+            console.log(k);
+            data1[k]=arr[k];
+        }
+        console.log(data1);
+        $.post("{php echo $this->createMobileUrl('form',['op'=>'post'])}",data1,function (r) {
+            console.log(r);
+            if(r.code==1){
+                layui.layer.msg(r.msg);
+                location.reload();
+            }else {
+                layui.layer.msg(r.msg);
+            }
+        },"json");
+        return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+    });
+    var laydate = layui.laydate;
+    timer.forEach(function (i) {
+        console.log(i);
+
+        laydate.render({
+            elem: "#"+i //指定元素
+            ,type: 'date' //默认，可不填
+        });
+    })
+
+</script>
+</body>
+</html>
